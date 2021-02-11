@@ -1,28 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Invoicing.Core.IRecordTypes;
+using Invoicing.Core.Repository;
 
-namespace Invoicing.Core
+namespace Invoicing.Core.RecordTypes
 {
     /// <summary>
     /// Party side
     /// </summary>
-    public abstract class Party : IDataChanges
+    public abstract class Party : BaseEntity, IParty
     {
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Party"/> class.
+        /// </summary>
+        public Party()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Party"/> class.
+        /// </summary>
+        /// <param name="country">The country.</param>
+        /// <param name="isVATPayer">if set to <c>true</c> [is vat payer].</param>
         public Party(Country country, bool isVATPayer = false)
         {
             this.isVATPayer = isVATPayer;
             this.country = country;
-            country.DataChanged += (sender, args) => NotifyThatDataHasChanged(this);
         }
+
+        #endregion Constructors
+
+        #region Properties
 
         private bool isVATPayer;
         private Country country;
-
-        /// <summary>
-        /// Occurs when [data changed].
-        /// </summary>
-        public event EventHandler DataChanged;
 
         /// <summary>
         /// Gets the title.
@@ -41,7 +56,7 @@ namespace Invoicing.Core
         public bool IsVATPayer 
         { 
             get => isVATPayer;
-            set { isVATPayer = value; NotifyThatDataHasChanged(); } 
+            set => isVATPayer = value;
         }
 
         /// <summary>
@@ -53,17 +68,10 @@ namespace Invoicing.Core
         public Country Country 
         {
             get => country;
-            set { country = value; NotifyThatDataHasChanged(); }
+            set => country = value;
         }
 
-        /// <summary>
-        /// Notifies the that data has changed.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        public void NotifyThatDataHasChanged(object sender = null)
-        {
-            if (DataChanged != null)
-                DataChanged(sender != null ? sender: this, new EventArgs());
-        }
+        #endregion Properties
+
     }
 }

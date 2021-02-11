@@ -1,14 +1,26 @@
-﻿using System;
+﻿using Invoicing.Core.Repository;
+using Invoicing.Core.IRecordTypes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Invoicing.Core
+namespace Invoicing.Core.RecordTypes
 {
     /// <summary>
     /// Represents country
     /// </summary>
-    public class Country : IDataChanges
+    public class Country : BaseEntity, ICountry
     {
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Country"/> class.
+        /// </summary>
+        public Country()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Country"/> class.
         /// </summary>
@@ -23,16 +35,15 @@ namespace Invoicing.Core
             this.percentRateOfVAT = percentRateOfVAT;
             this.europeanUnionMember = europeanUnionMember;
         }
-        
+
+        #endregion Constructors
+
+        #region Properties
+
         private string countryCode;
         private string countryName;
         private bool europeanUnionMember;
         private decimal percentRateOfVAT;
-
-        /// <summary>
-        /// Occurs when [data changed].
-        /// </summary>
-        public event EventHandler DataChanged;
 
         /// <summary>
         /// Gets the country code.
@@ -40,7 +51,11 @@ namespace Invoicing.Core
         /// <value>
         /// The country code.
         /// </value>
-        public string CountryCode => countryCode;
+        public string CountryCode
+        {
+            get => countryCode;
+            set => countryCode = value;
+        }
 
         /// <summary>
         /// Gets the name of the country.
@@ -48,7 +63,11 @@ namespace Invoicing.Core
         /// <value>
         /// The name of the country.
         /// </value>
-        public string CountryName => countryName;
+        public string CountryName
+        {
+            get => countryName;
+            set => countryName = value;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether [european union member].
@@ -59,7 +78,7 @@ namespace Invoicing.Core
         public bool EuropeanUnionMember 
         {
             get => europeanUnionMember;
-            set { europeanUnionMember = value; NotifyThatDataHasChanged(); }
+            set => europeanUnionMember = value;
         }
 
         /// <summary>
@@ -71,18 +90,10 @@ namespace Invoicing.Core
         public decimal PercentRateOfVAT 
         { 
             get => percentRateOfVAT;
-            set { percentRateOfVAT = value; NotifyThatDataHasChanged(); }
+            set => percentRateOfVAT = value;
         }
 
-        /// <summary>
-        /// Notifies the that data has changed.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        public void NotifyThatDataHasChanged(object sender = null)
-        {
-            if (DataChanged != null)
-                DataChanged(sender != null ? sender : this, new EventArgs());
-        }
+        #endregion Properties
 
     }
 }

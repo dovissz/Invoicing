@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Invoicing.Core.IRecordTypes;
+using Invoicing.Core.Repository;
 
-namespace Invoicing.Core
+namespace Invoicing.Core.RecordTypes
 {
     /// <summary>
     /// Represents invoice with all its information
     /// </summary>
-    public class Invoice
+    public class Invoice : BaseEntity, IInvoice
     {
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Invoice"/> class.
+        /// </summary>
+        public Invoice()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Invoice"/> class.
         /// </summary>
@@ -21,10 +32,11 @@ namespace Invoicing.Core
             this.sender = sender;
             this.reciever = reciever;
             this.sumOfOrderBeforeTaxes = sumOfOrderBeforeTaxes;
-            sender.DataChanged += (sender, args) => CalculateTotal();
-            reciever.DataChanged += (sender, args) => CalculateTotal();
-            CalculateTotal();
         }
+
+        #endregion Constructors
+
+        #region Properties
 
         private Company sender;
         private Party reciever;
@@ -41,7 +53,7 @@ namespace Invoicing.Core
         public decimal SumOfOrderBeforeTaxes
         {
             get => sumOfOrderBeforeTaxes;
-            set { sumOfOrderBeforeTaxes = value; CalculateTotal(); }
+            set => sumOfOrderBeforeTaxes = value;
         }
 
         /// <summary>
@@ -76,6 +88,10 @@ namespace Invoicing.Core
         /// </value>
         public Party Reciever => reciever;
 
+        #endregion Properties
+
+        #region Methods
+
         private decimal CalculateVatRatio()
         {
             if (sender.IsVATPayer)
@@ -88,11 +104,18 @@ namespace Invoicing.Core
             return 0;
         }
 
-        private void CalculateTotal()
+        /// <summary>
+        /// Calculates the total.
+        /// </summary>
+        /// <returns></returns>
+        public decimal CalculateTotal()
         {
             taxesSum = (CalculateVatRatio() * sumOfOrderBeforeTaxes) / 100;
             totalOrderSum = taxesSum + sumOfOrderBeforeTaxes;
+            return totalOrderSum;
         }
+
+        #endregion Methods
 
     }
 }
